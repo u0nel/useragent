@@ -17,13 +17,14 @@ import (
 	"github.com/kolesa-team/go-webp/webp"
 	"github.com/u0nel/accept"
 
-	"github.com/johnfercher/maroto/pkg/consts"
-	"github.com/johnfercher/maroto/pkg/pdf"
+	"github.com/jung-kurt/gofpdf"
 )
 
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		useragent := r.Header.Get("User-Agent")
+
+		// we can't use a map[string]func(w, r), because maps aren't ordered
 		types := []string{"text/plain", "text/html", "application/json", "image/png", "image/webp", "application/pdf"}
 
 		requestedType := accept.ServeType(types, r.Header.Get("Accept"))
@@ -100,13 +101,9 @@ func writeWebp(w http.ResponseWriter, useragent string) {
 }
 
 func writePdf(w http.ResponseWriter, useragent string) {
-	m := pdf.NewMaroto(consts.Portrait, consts.A4)
-	m.SetPageMargins(20, 10, 20)
-	m.Row(50, func() {
-		m.Col(12, func() {
-			m.Text(useragent)
-		})
-	})
-	s, _ := m.(*pdf.PdfMaroto)
-	s.Pdf.Output(w)
+	pdf := gofpdf.New("P", "mm", "A4", "")
+	pdf.AddPage()
+	pdf.SetFont("Arial", "B", 16)
+	pdf.Cell(40, 10, useragent)
+	pdf.Output(w)
 }
