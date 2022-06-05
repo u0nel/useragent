@@ -7,6 +7,7 @@ import (
 	"image/png"
 	"log"
 	"net/http"
+	"strings"
 
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/basicfont"
@@ -32,7 +33,7 @@ func main() {
 		case "text/plain":
 			w.Write([]byte(r.Header.Get("User-Agent")))
 		case "text/html":
-			writeHtml(w, useragent)
+			writeHtml(w, useragent, types)
 		case "application/json":
 			writeJson(w, useragent)
 		case "image/png":
@@ -48,10 +49,16 @@ func main() {
 	log.Fatal(http.ListenAndServe(":8090", nil))
 }
 
-func writeHtml(w http.ResponseWriter, useragent string) {
+func writeHtml(w http.ResponseWriter, useragent string, types []string) {
 	w.Write([]byte(`<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
 <h1>What's your user Agent?</h1>
-<pre>` + useragent + "</pre>\n"))
+It's
+<pre><code>` + useragent + `</code></pre>
+Unlike other websites like whatsmyuseragent.org, 
+this website responds to the <code>Accept</code> Header.
+It currently supports <code>` + strings.Join(types, "</code>, <code>") + `</code>
+. If you want more, you can open an issue on <a href="https://github.com/u0nel/useragent">Github</a>
+`))
 }
 
 func writeJson(w http.ResponseWriter, useragent string) {
