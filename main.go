@@ -15,12 +15,15 @@ import (
 	"github.com/kolesa-team/go-webp/encoder"
 	"github.com/kolesa-team/go-webp/webp"
 	"github.com/u0nel/accept"
+
+	"github.com/johnfercher/maroto/pkg/consts"
+	"github.com/johnfercher/maroto/pkg/pdf"
 )
 
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		useragent := r.Header.Get("User-Agent")
-		types := []string{"text/plain", "text/html", "application/json", "image/png", "image/webp"}
+		types := []string{"text/plain", "text/html", "application/json", "image/png", "image/webp", "application/pdf"}
 
 		requestedType := accept.ServeType(types, r.Header.Get("Accept"))
 		w.Header().Add("Content-Type", requestedType)
@@ -36,6 +39,8 @@ func main() {
 			writePng(w, useragent)
 		case "image/webp":
 			writeWebp(w, useragent)
+		case "application/pdf":
+			writePdf(w, useragent)
 		default:
 			http.Error(w, "Could not serve requested Type", http.StatusNotAcceptable)
 		}
@@ -61,7 +66,10 @@ func makeImage(useragent string) image.Image {
 	x := 0
 	y := 13
 	col := color.RGBA{200, 100, 0, 255}
-	point := fixed.Point26_6{fixed.I(x), fixed.I(y)}
+	point := fixed.Point26_6{
+		X: fixed.I(x),
+		Y: fixed.I(y),
+	}
 
 	d := &font.Drawer{
 		Dst:  img,
@@ -82,4 +90,16 @@ func writeWebp(w http.ResponseWriter, useragent string) {
 	img := makeImage(useragent)
 	options, _ := encoder.NewLossyEncoderOptions(encoder.PresetDefault, 75)
 	webp.Encode(w, img, options)
+}
+
+func writePdf(w http.ResponseWriter, useragent string) {
+	m := pdf.NewMaroto(consts.Portrait, consts.A4)
+	m.SetPageMargins(20, 10, 20)
+	m.Row(50, func() {
+		m.Col(12, func() {
+			m.Text(useragent)
+		})
+	})
+	s, _ := m.(*pdf.PdfMaroto)
+	s.Pdf.Output(w)
 }
