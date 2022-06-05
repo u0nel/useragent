@@ -24,6 +24,8 @@ github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UV
 github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
 github.com/u0nel/accept v0.0.0-20220605153948-a65b2f9d9b7b h1:nU/D0gzUa9IhteofBvdrcjZhXhlGXgLz9wYR/nOVvKo=
 github.com/u0nel/accept v0.0.0-20220605153948-a65b2f9d9b7b/go.mod h1:8opZDiYx4LIxxPXbPzPj+0+03jgazAgOJGtF369D93Y=
+github.com/u0nel/accept v0.0.0-20220605162756-d43b81c8556a h1:M80hq2x7DACxHrq6Jnis9lqb8ytBRQ0GPAJV5eY+Fgg=
+github.com/u0nel/accept v0.0.0-20220605162756-d43b81c8556a/go.mod h1:8opZDiYx4LIxxPXbPzPj+0+03jgazAgOJGtF369D93Y=
 golang.org/x/image v0.0.0-20190910094157-69e4b8554b2a/go.mod h1:FeLwcggjj3mMvU+oOTbSwawSJRM1uh48EjtB4UJZlP0=
 golang.org/x/image v0.0.0-20210628002857-a66eb6448b8d/go.mod h1:023OzeP/+EPmXeapQh35lcL3II3LrY8Ic+EFFKVhULM=
 golang.org/x/image v0.0.0-20220601225756-64ec528b34cd h1:9NbNcTg//wfC5JskFW4Z3sqwVnjmJKHxLAol1bW2qgw=
