@@ -12,13 +12,15 @@ import (
 	"golang.org/x/image/font/basicfont"
 	"golang.org/x/image/math/fixed"
 
+	"github.com/kolesa-team/go-webp/encoder"
+	"github.com/kolesa-team/go-webp/webp"
 	"github.com/u0nel/accept"
 )
 
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		useragent := r.Header.Get("User-Agent")
-		types := []string{"text/plain", "text/html", "application/json", "image/png"}
+		types := []string{"text/plain", "text/html", "application/json", "image/png", "image/webp"}
 
 		requestedType := accept.ServeType(types, r.Header.Get("Accept"))
 		w.Header().Add("Content-Type", requestedType)
@@ -32,6 +34,8 @@ func main() {
 			writeJson(w, useragent)
 		case "image/png":
 			writePng(w, useragent)
+		case "image/webp":
+			writeWebp(w, useragent)
 		default:
 			http.Error(w, "Could not serve requested Type", http.StatusNotAcceptable)
 		}
@@ -72,4 +76,10 @@ func makeImage(useragent string) image.Image {
 func writePng(w http.ResponseWriter, useragent string) {
 	img := makeImage(useragent)
 	png.Encode(w, img)
+}
+
+func writeWebp(w http.ResponseWriter, useragent string) {
+	img := makeImage(useragent)
+	options, _ := encoder.NewLossyEncoderOptions(encoder.PresetDefault, 75)
+	webp.Encode(w, img, options)
 }
