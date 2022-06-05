@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 
@@ -20,7 +21,13 @@ func main() {
 			w.Write([]byte(`
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
 	<h1>What's your user Agent?</h1>
-	<pre>` + useragent))
+	<pre>` + useragent + "</pre>\n"))
+		case "application/json":
+			w.Header().Add("Content-Type", "application/json")
+			v := struct {
+				UserAgent string `json:"user_agent"`
+			}{useragent}
+			json.NewEncoder(w).Encode(v)
 		default:
 			http.Error(w, "Could not serve requested Type", http.StatusNotAcceptable)
 		}
